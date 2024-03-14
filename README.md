@@ -21,6 +21,7 @@ First install pyinstaller
 
 Then, if not already, add python scripts to PATH in environment variables
 
+Open and edit the .bat file for the splash image you desire.
 run the .bat file.
 
 Done!

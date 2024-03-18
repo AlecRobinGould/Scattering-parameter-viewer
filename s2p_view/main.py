@@ -187,12 +187,9 @@ def openS2P(path):
         writeToFile(mean, path)
     except:
         textpath = path + 'error.txt'
-        try:
-            with open(textpath, 'a') as txtFile:
-                txtFile.writelines("Cannot open .csv file. try closing it.")
-        except:
-            pass
-        
+        with open(textpath, 'a') as txtFile:
+            txtFile.writelines("Cannot open .csv file. try closing it.")
+
 def writeToFile(mean, path):
     sep = '.'
     filepath = path.rpartition(sep)[0] + '.csv' 
@@ -221,23 +218,60 @@ def writeToFile(mean, path):
 def averageS21(path):
     totalMagnitude = 0.0
     # To get mag, we need the sqrroot of real squared plus imaginary squared
+    doOnceFlag = True
+    Lines = 0
     with open(path) as file:
         # Get number of avg points
-        Lines = len(file.readlines()) - 1
-        print(Lines)
+        # Lines = len(file.readlines()) - 1
         # Set file ref back to TOF (top of file)
-        file.seek(1)
+        file.seek(0)
+        useFlag = False
+        d = file.readline()
+        print(d)
+        if 'Agilent' in d:
+            space = '\t'
+        else:
+            space = ' '
+        file.seek(0)
+        
         for line in file:
             # Our watch character
-            space = ' '
             # Obtain S21 real
-            x = line.split(space,4)[3]
-            # Obtain S21 imag
-            y = line.split(space,5)[4]
-            # Ignore top of file (header)... Can also file.seek(1)
-            if x != 'RI' and y != 'R':
-                magnitude = math.sqrt(math.pow(float(x), 2) + math.pow(float(y), 2))
-                totalMagnitude = totalMagnitude + magnitude
+            z = line.split(' ',1)[0]
+            # print(z)
+            noUseFlag = True
+            while((z == '#' or useFlag) and noUseFlag):
+                useFlag = True
+                if doOnceFlag:
+                    x = line.split(' ',4)[3]
+                    y = line.split(' ',5)[4]
+                else:
+                    x = line.split(space,4)[3]
+                    # Obtain S21 imag
+                    y = line.split(space,5)[4]
+                # Ignore top of file (header). .. Can also file.seek(1)
+                if (x == 'RI' and y == 'R') and doOnceFlag:
+                    linear = True
+                    print('linear')
+                    doOnceFlag = False
+                elif (x == 'dB' and y == 'R') and doOnceFlag:
+                    linear = False
+                    print('logarithmic')
+                    doOnceFlag = False
+
+                if (x != 'RI' and y != 'R') and linear:
+                    # We are working with linear
+                    magnitude = math.sqrt(math.pow(float(x), 2) + math.pow(float(y), 2))
+                    totalMagnitude = totalMagnitude + magnitude
+                    Lines = Lines + 1
+                elif (x != 'dB' and y != 'R') and linear == False:
+                    # we are working with logarithmic
+                    convertToLinReal = pow(10,(float(x)/20))*math.cos((float(y)*180)/math.pi)
+                    convertToLinImag = pow(10,(float(x)/20))*math.sin((float(y)*180)/math.pi)
+                    magnitude = math.sqrt(math.pow(float(convertToLinReal), 2) + math.pow(float(convertToLinImag), 2))
+                    totalMagnitude = totalMagnitude + magnitude
+                    Lines = Lines + 1
+                noUseFlag = False
     # Convert to dB from linear, and return
     return 20*math.log10(totalMagnitude/Lines)
 

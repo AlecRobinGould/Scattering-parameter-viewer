@@ -4,9 +4,9 @@ This Application additionally calculates the average |S21| and writes it to a .c
 
 ## IF the .s2p is formatted as mag and phase - get linear first!
 
-$S21_{real} = 10^{S21_{magnitude}\over20} \times \cos(S21_{phase}\times{180 \over pi})$
+$S21_{real} = 10^{S21_{magnitude}\over20} \times \cos(S21_{phase}\times{\Pi \over 180})$
 
-$S21_{imag} = 10^{S21_{magnitude}\over20} \times \sin(S21_{phase}\times{180 \over pi})$
+$S21_{imag} = 10^{S21_{magnitude}\over20} \times \sin(S21_{phase}\times{\Pi \over pi})$
 
 From here proceed to the next section
 

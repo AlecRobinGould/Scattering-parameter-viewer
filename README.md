@@ -20,7 +20,7 @@ $|S21_{mean}| = \frac{1}{n} \left( \displaystyle\sum_{i=1}^{n} |S21| \right)$
 
 $|S21_{mean}|(dB) = 20log{S21_{mean}}$ dB
 
-The 4th column in a .s2p file is typically the S21 real component, and the 5th being the imaginary component.
+The 4th column in a .s2p file is typically the S21 real (or magnitude) component, and the 5th being the imaginary (or phase) component.
 
 ## Create a standalone application use pyinstaller
 First install pyinstaller

@@ -16,8 +16,9 @@ From here proceed to the next section
 
 $|S21| = \sqrt{Real(S21)^2 + Imag(S21)^2}$
 
+$|S21_{mean}| = \frac{1}{n} \left( \displaystyle\sum_{i=1}^{n} |S21| \right)$
 
-$|S21|(dB) = 20log{S21}$ dB
+$|S21_{mean}|(dB) = 20log{S21}$ dB
 
 The 4th column in a .s2p file is typically the S21 real component, and the 5th being the imaginary component.
 
